@@ -2,6 +2,37 @@
 #include "../managers/IconKitManager.hpp"
 #undef max
 
+UnlockList IconKitWidget::checkRequiredIcons() {
+    auto gm = gd::GameManager::sharedState();
+
+    UnlockList unlocks;
+
+    for (auto const& icon : UnlockList {
+        { gd::kUnlockTypeCube,          this->m_pKitObject->getCubeID() },
+        { gd::kUnlockTypeShip,          this->m_pKitObject->getShipID() },
+        { gd::kUnlockTypeBall,          this->m_pKitObject->getBallID() },
+        { gd::kUnlockTypeUfo,           this->m_pKitObject->getUfoID() },
+        { gd::kUnlockTypeWave,          this->m_pKitObject->getWaveID() },
+        { gd::kUnlockTypeRobot,         this->m_pKitObject->getRobotID() },
+        { gd::kUnlockTypeSpider,        this->m_pKitObject->getSpiderID() },
+        { gd::kUnlockTypeDeathEffect,   this->m_pKitObject->getDeathID() },
+        { gd::kUnlockTypeSpecial,       this->m_pKitObject->getStreakID() },
+    })
+        if (!gm->isIconUnlocked(icon.second, getRelatedIconType(icon.first)))
+            unlocks.push_back(icon);
+    
+    if (!gm->isColorUnlocked(this->m_pKitObject->getColor1(), false))
+        unlocks.push_back({ gd::kUnlockTypeColor1, this->m_pKitObject->getColor1() });
+
+    if (!gm->isColorUnlocked(this->m_pKitObject->getColor2(), true))
+        unlocks.push_back({ gd::kUnlockTypeColor2, this->m_pKitObject->getColor2() });
+
+    if (this->m_pKitObject->getGlowEnabled() && !gm->isIconUnlocked(2, gd::kIconTypeSpecial))
+        unlocks.push_back({ gd::kUnlockTypeSpecial, 2 });
+
+    return unlocks;
+}
+
 void IconKitWidget::onRemove(cocos2d::CCObject* pSender) {
     IconKitManager::sharedState()->removeKit(this->m_pKitObject);
 
@@ -12,6 +43,12 @@ void IconKitWidget::onRemove(cocos2d::CCObject* pSender) {
 }
 
 void IconKitWidget::onUse(cocos2d::CCObject* pSender) {
+    auto req = this->checkRequiredIcons();
+    if (req.size() && pSender) {
+        UnlockDialog::create(this, req)->show();
+        return;
+    }
+
     auto gm = gd::GameManager::sharedState();
 
     gm->setPlayerFrame(this->m_pKitObject->getCubeID());

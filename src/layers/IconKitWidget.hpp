@@ -4,6 +4,7 @@
 #include "../managers/IconKitObject.hpp"
 #include "IconSelectPopup.hpp"
 #include "GJGarageLayer.hpp"
+#include "UnlockDialog.hpp"
 
 class IconKitWidget : public cocos2d::CCLayer {
     public:
@@ -24,6 +25,7 @@ class IconKitWidget : public cocos2d::CCLayer {
 
         void onRemove(cocos2d::CCObject*);
         void onUse(cocos2d::CCObject*);
+        UnlockList checkRequiredIcons();
 
     public:
         static IconKitWidget * create(IconKitObject*);

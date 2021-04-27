@@ -17,6 +17,22 @@ namespace gd {
 		kIconTypeDeathEffect    = 98,
 		kIconTypeSpecial        = 99,
 	};
+	
+	enum UnlockType {
+		kUnlockTypeUnknown = 0,
+		kUnlockTypeCube = 1,
+		kUnlockTypeColor1 = 2,
+		kUnlockTypeColor2 = 3,
+		kUnlockTypeShip = 4,
+		kUnlockTypeBall = 5,
+		kUnlockTypeUfo = 6,
+		kUnlockTypeWave = 7,
+		kUnlockTypeRobot = 8,
+		kUnlockTypeSpider = 9,
+		kUnlockTypeSpecial = 10,
+		kUnlockTypeDeathEffect = 11,
+		kUnlockTypeGlow = 12,
+	};
 
 	class PlayLayer;
 
@@ -141,6 +157,26 @@ namespace gd {
 		void setPlayerIconType(IconType v) { m_nPlayerIconType = v; }
 
 		#undef FUCK_THIS
+		
+		bool isColorUnlocked(int _id, bool _type) {
+			return reinterpret_cast<bool(__thiscall*)(
+				GameManager*, int, bool
+			)>(
+				base + 0xc53f0
+			)(
+				this, _id, _type
+			);
+		}
+
+		bool isIconUnlocked(int _id, IconType _type) {
+			return reinterpret_cast<bool(__thiscall*)(
+				GameManager*, int, IconType
+			)>(
+				base + 0xc4fc0
+			)(
+				this, _id, _type
+			);
+		}
 
 		cocos2d::ccColor3B colorForIdx(int _id) {
 			auto ret = reinterpret_cast<cocos2d::ccColor3B(__stdcall*)(

@@ -67,6 +67,7 @@ namespace gd {
 #include "sprite_nodes/AnimatedShopKeeper.h"
 #include "sprite_nodes/PlayerObject.h"
 #include "sprite_nodes/TextArea.h"
+#include "sprite_nodes/GJItemIcon.h"
 
 #include "text_input_nodes/CCTextInputNode.h"
 

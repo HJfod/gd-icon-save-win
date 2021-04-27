@@ -15,12 +15,20 @@ bool IconKitManager::init() {
 
 void IconKitManager::encodeDataTo(DS_Dictionary* data) {
     data->setIntegerForKey("version", MOD_VERSION_INT);
+    data->setIntegerForKey("kitcount", this->m_vKits->count());
 
-    if (!data->stepIntoSubDictWithKey("kits"))
-        return;
+    if (!data->stepIntoSubDictWithKey("kits")) {
+        data->setSubDictForKey("kits");
+
+        if (!data->stepIntoSubDictWithKey("kits"))
+            return;
+    }
 
     for (auto ix = 0u; ix < this->m_vKits->count(); ix++) {
-        if (!data->stepIntoSubDictWithKey(("k" + std::to_string(ix)).c_str()))
+        auto key = std::string("k") + std::to_string(ix);
+
+        data->setSubDictForKey(key.c_str());
+        if (!data->stepIntoSubDictWithKey(key.c_str()))
             return;
 
         auto kit = dynamic_cast<IconKitObject*>(this->m_vKits->objectAtIndex(ix));
@@ -28,6 +36,8 @@ void IconKitManager::encodeDataTo(DS_Dictionary* data) {
 
         data->stepOutOfSubDict();
     }
+
+    data->stepOutOfSubDict();
 }
 
 void IconKitManager::dataLoaded(DS_Dictionary* data) {
@@ -46,7 +56,11 @@ void IconKitManager::dataLoaded(DS_Dictionary* data) {
         // iconkitobject doesn't call autorelease...
 
         this->m_vKits->addObject(obj);
+
+        data->stepOutOfSubDict();
     }
+
+    data->stepOutOfSubDict();
 }
 
 void IconKitManager::firstLoad() {
