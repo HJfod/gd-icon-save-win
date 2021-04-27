@@ -40,8 +40,8 @@ namespace AppDelegateHook {
     static inline bool loadHook() {
         auto res = MH_CreateHook(
             (PVOID)(gd::base + 0xCC500),
-            as<LPVOID>(AppDelegateHook::trySaveGameHook),
-            as<LPVOID*>(&AppDelegateHook::trySaveGame)
+            as<LPVOID>(AppDelegateHook::dataLoadedHook),
+            as<LPVOID*>(&AppDelegateHook::dataLoaded)
         ) == MH_OK;
 
         if (!res)

@@ -21,8 +21,10 @@ DWORD WINAPI load_thread(LPVOID hModule) {
             #ifdef GDCONSOLE
             gd::console::awaitUnload();
             #endif
-        } else
+        } else {
+            MessageBoxA(nullptr, "Unable to load mod!", "IconSave", MB_ICONERROR);
             FreeLibraryAndExitThread((HMODULE)hModule, 0);
+        }
     } else
         FreeLibraryAndExitThread((HMODULE)hModule, 0);
 
