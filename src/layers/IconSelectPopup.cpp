@@ -111,3 +111,4 @@ IconSelectPopup* IconSelectPopup::create(GJGarageLayer* gl) {
     CC_SAFE_DELETE(pRet);
     return nullptr;
 }
+
