@@ -19,6 +19,8 @@ class IconKitObject : public cocos2d::CCObject {
 
     CC_SYNTHESIZE(bool,     m_bGlow,    GlowEnabled);
 
+    CC_SYNTHESIZE_PASS_BY_REF(std::string, m_sName, Name);
+
     public:
         virtual inline bool canEncode() override { return true; }
 
@@ -39,6 +41,11 @@ class IconKitObject : public cocos2d::CCObject {
 
             this->m_nColor1     = dict->getIntegerForKey("k12");
             this->m_nColor2     = dict->getIntegerForKey("k13");
+
+            this->m_sName       = dict->getStringForKey("name");
+
+            if (!this->m_sName.size())
+                this->m_sName = "Unnamed";
         }
 
         virtual inline void encodeWithCoder(DS_Dictionary* dict) override {
@@ -60,6 +67,8 @@ class IconKitObject : public cocos2d::CCObject {
 
             dict->setIntegerForKey("k12", this->m_nColor1);
             dict->setIntegerForKey("k13", this->m_nColor2);
+
+            dict->setStringForKey("name", this->m_sName);
         }
 
         static inline IconKitObject* createWithCoder(DS_Dictionary* dict) {

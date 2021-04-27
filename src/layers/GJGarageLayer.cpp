@@ -22,6 +22,7 @@ void GJGarageLayer::onSaveCurrent(cocos2d::CCObject* pSender) {
     icon->setGlowEnabled(gm->getPlayerGlow());
     icon->setColor1(gm->getPlayerColor());
     icon->setColor2(gm->getPlayerColor2());
+    icon->setName(gd::GJAccountManager::sharedState()->getUsername());
 
     auto im = IconKitManager::sharedState();
 

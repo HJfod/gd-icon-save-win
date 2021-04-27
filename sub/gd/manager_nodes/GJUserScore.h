@@ -78,6 +78,8 @@ namespace gd {
 
             inline int getPlayerColor1() const { return this->color1_; };
             inline int getPlayerColor2() const { return this->color2_; };
+
+            inline std::string getPlayerName() const { return this->userName_; };
     };
 }
 

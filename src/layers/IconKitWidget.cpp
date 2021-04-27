@@ -1,5 +1,6 @@
 #include "IconKitWidget.hpp"
 #include "../managers/IconKitManager.hpp"
+#include "RenameDialog.hpp"
 #undef max
 
 UnlockList IconKitWidget::checkRequiredIcons() {
@@ -111,6 +112,21 @@ void IconKitWidget::onUse(cocos2d::CCObject* pSender) {
     this->m_pParentPopup->removeFromParentAndCleanup(true);
 }
 
+void IconKitWidget::onRename(cocos2d::CCObject* pSender) {
+    auto dialog = RenameDialog::create();
+    
+    if (dialog) {
+        dialog->show();
+        dialog->setCallback([this](const char* _str) -> void {
+            if (!strlen(_str))
+                _str = "Unnamed";
+                
+            this->m_pNameLabel->setString(_str);
+            this->m_pKitObject->setName(_str);
+        });
+    }
+}
+
 bool IconKitWidget::init(IconKitObject* _obj, float _width) {
     if (!cocos2d::CCNode::init())
         return false;
@@ -127,6 +143,21 @@ bool IconKitWidget::init(IconKitObject* _obj, float _width) {
     this->m_pBGSprite = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     this->m_pBGSprite->setContentSize({ this->m_fWidth, this->m_fHeight });
     this->m_pBGSprite->setPosition(this->getContentSize() / 2);
+
+    auto menu = cocos2d::CCMenu::create();
+    
+    this->m_pNameLabel = cocos2d::CCLabelBMFont::create(
+        this->m_pKitObject->getName().c_str(),
+        "goldFont.fnt"
+    );
+    this->m_pNameLabel->setScale(.5f);
+    auto labelBtn = gd::CCMenuItemSpriteExtra::create(
+        this->m_pNameLabel,
+        this,
+        (cocos2d::SEL_MenuHandler)&IconKitWidget::onRename
+    );
+    labelBtn->setPosition(0.0f, this->m_fHeight / 2 - 10.0f);
+    menu->addChild(labelBtn);
 
     auto ix = 0u;
     for (auto const& icon_d : std::vector<std::pair<uint32_t, gd::IconType>> {
@@ -154,8 +185,6 @@ bool IconKitWidget::init(IconKitObject* _obj, float _width) {
         icon->setPosition({ padding + ix++ * 33.0f, this->m_fHeight / 2 });
         this->m_pBGSprite->addChild(icon);
     }
-
-    auto menu = cocos2d::CCMenu::create();
 
     auto spr_delete = cocos2d::CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
     spr_delete->setScale(.8f);

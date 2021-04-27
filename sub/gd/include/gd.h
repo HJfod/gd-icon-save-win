@@ -51,6 +51,7 @@ namespace gd {
 #include "manager_nodes/GameSoundManager.h"
 #include "manager_nodes/AchievementManager.h"
 #include "manager_nodes/GJUserScore.h"
+#include "manager_nodes/GJAccountManager.h"
 
 #include "menu_nodes/CCMenuItemSpriteExtra.h"
 #include "menu_nodes/CCMenuItemToggler.h"

@@ -16,13 +16,14 @@ void ProfilePage::onSaveIcons(cocos2d::CCObject* pSender) {
     icon->setGlowEnabled(this->m_pScore->getGlowEnabled());
     icon->setColor1(this->m_pScore->getPlayerColor1());
     icon->setColor2(this->m_pScore->getPlayerColor2());
+    icon->setName(this->m_pScore->getPlayerName());
 
     auto im = IconKitManager::sharedState();
 
     if (im) {
         im->addKit(icon);
 
-        auto popup = gd::TextAlertPopup::create("Icon Kit Added!", .5f, .6f);
+        auto popup = gd::TextAlertPopup::create("Icon Kit Saved!", .5f, .6f);
         this->addChild(popup, 100);
     }
 }
