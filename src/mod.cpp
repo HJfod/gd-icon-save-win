@@ -13,7 +13,7 @@ bool mod::load() {
         return false;
     if (!AppDelegateHook::loadHook())
         return false;
-
+        
     if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK) [[unlikely]] {
         MH_Uninitialize();
         return false;

@@ -3,7 +3,7 @@
 void RenameDialog::setup() {
     auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-    this->m_pInput = InputNode::create(150.0f, this->m_sPlaceholder, "bigFont.fnt");
+    this->m_pInput = InputNode::create(180.0f, this->m_sPlaceholder, "bigFont.fnt");
     this->m_pInput->setPosition(winSize / 2);
     this->m_pLayer->addChild(this->m_pInput);
 
@@ -38,21 +38,13 @@ bool RenameDialog::initWithText(float _w, float _h, const char * _bg, const char
 }
 
 RenameDialog * RenameDialog::create() {
-    auto pRet = new RenameDialog();
-
-    if (pRet && pRet->initWithText(200.0f, 140.0f, "GJ_square02.png")) {
-        pRet->autorelease();
-        return pRet;
-    }
-
-    CC_SAFE_DELETE(pRet);
-    return nullptr;
+    return RenameDialog::create("Rename Kit");
 }
 
 RenameDialog * RenameDialog::create(const char* _ph, const char* _btn) {
     auto pRet = new RenameDialog();
 
-    if (pRet && pRet->initWithText(200.0f, 140.0f, "GJ_square02.png", _ph, _btn)) {
+    if (pRet && pRet->initWithText(220.0f, 140.0f, "GJ_square02.png", _ph, _btn)) {
         pRet->autorelease();
         return pRet;
     }

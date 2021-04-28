@@ -27,6 +27,9 @@ class IconSelectPopup : public BrownAlertDelegate {
         void onNextPage(cocos2d::CCObject*);
         void onPrevPage(cocos2d::CCObject*);
         void onSearch(cocos2d::CCObject*);
+        void onCancelSearch(cocos2d::CCObject*);
+
+        void scrollWheel(float, float) override;
 
     public:
         void showKitRemovedMessage(float);

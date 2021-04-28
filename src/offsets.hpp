@@ -42,6 +42,29 @@ inline bool patchBytes(
     );
 }
 
+// thanks pie
+inline bool patchVoid(void* dst, const void* src, void* buff, const int len) {
+	if (buff)
+		patchVoid(buff, dst, nullptr, len);
+    
+	return WriteProcessMemory(GetCurrentProcess(), dst, src, len, nullptr);
+}
+
+// thanks pie
+inline bool patchVFunction(
+    uintptr_t const address,
+    void* const func
+) {
+    DWORD old;
+    auto addr = &func;
+
+    VirtualProtect(gd::base + address, 4, PAGE_EXECUTE_READWRITE, &old);
+    auto res = patchVoid(gd::base + address, &addr, nullptr, 4);
+    VirtualProtect(gd::base + address, 4, PAGE_READONLY, &old);
+
+    return res;
+}
+
 using unknown_t = uintptr_t;
 using edx_t = uintptr_t;
 

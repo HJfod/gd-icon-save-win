@@ -5,6 +5,21 @@
 #undef max
 #undef min
 
+void IconSelectPopup::scrollWheel(float _dy, float _dx) {
+    auto lr = this->m_pScrollingLayer->m_pScrollLayer;
+    auto dest = lr->getPositionY() + _dy * 2;
+
+    lr->setPositionY(dest);
+
+    if (dest < 0)
+        lr->setPositionY(0);
+
+    if (dest > this->m_pScrollingLayer->m_fLayerHeight)
+        lr->setPositionY(
+            this->m_pScrollingLayer->m_fLayerHeight
+        );
+}
+
 std::string lower(std::string const& _text) {
     auto data = _text;
 
@@ -141,6 +156,10 @@ void IconSelectPopup::onSearch(cocos2d::CCObject*) {
     }
 }
 
+void IconSelectPopup::onCancelSearch(cocos2d::CCObject*) {
+    this->showPage(this->m_nCurrentPage);
+}
+
 void IconSelectPopup::setup() {
     // TODO: not write code this horrible lmao
     // (fixes the border color of ScrollingLayer)
@@ -159,7 +178,7 @@ void IconSelectPopup::setup() {
     auto title = cocos2d::CCLabelBMFont::create(titleStr.c_str(), "bigFont.fnt");
 
     title->setScale(.7f);
-    title->setPosition(winSize.width / 2, winSize.height - 50.0f);
+    title->setPosition(winSize.width / 2, winSize.height / 2 + this->m_pLrSize.height / 2 - 24.0f);
 
     this->m_pLayer->addChild(title);
 
@@ -168,7 +187,6 @@ void IconSelectPopup::setup() {
         { winSize.width / 2, winSize.height / 2 - 10.0f },
         std::max(0.0f, (kits->count() + 1) * IconKitWidget::s_defHeight - lrHeight)
     );
-    this->m_pScrollingLayer->setMouseEnabled(true);
     this->m_pScrollingLayer->m_pParent = this->m_pLayer;
 
     this->m_pPageLabel = cocos2d::CCLabelBMFont::create("Page ~/~", "goldFont.fnt");
@@ -217,17 +235,35 @@ void IconSelectPopup::setup() {
 
     this->m_pLayer->addChild(this->m_pScrollingLayer);
 
+    auto search_spr = cocos2d::CCSprite::createWithSpriteFrameName("gj_findBtn_001.png");
+    search_spr->setScale(.8f);
+
     auto searchBtn = gd::CCMenuItemSpriteExtra::create(
-        cocos2d::CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"),
+        search_spr,
         this,
         (cocos2d::SEL_MenuHandler)&IconSelectPopup::onSearch
     );
     searchBtn->setPosition(
-        - this->m_pLrSize.width / 2 + 60.0f,
+        - this->m_pLrSize.width / 2 + 45.0f,
         this->m_pLrSize.height / 2 - 25.0f
     );
-
     this->m_pButtonMenu->addChild(searchBtn, 100);
+    
+    auto cancel_spr = cocos2d::CCSprite::createWithSpriteFrameName("gj_findBtnOff_001.png");
+    cancel_spr->setScale(.8f);
+
+    auto cancelBtn = gd::CCMenuItemSpriteExtra::create(
+        cancel_spr,
+        this,
+        (cocos2d::SEL_MenuHandler)&IconSelectPopup::onCancelSearch
+    );
+    cancelBtn->setPosition(
+        - this->m_pLrSize.width / 2 + 75.0f,
+        this->m_pLrSize.height / 2 - 25.0f
+    );
+    this->m_pButtonMenu->addChild(cancelBtn, 100);
+
+    this->setMouseEnabled(true);
 }
 
 IconSelectPopup* IconSelectPopup::create(GJGarageLayer* gl) {
