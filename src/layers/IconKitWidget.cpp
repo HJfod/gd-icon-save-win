@@ -127,6 +127,32 @@ void IconKitWidget::onRename(cocos2d::CCObject* pSender) {
     }
 }
 
+void IconKitWidget::onShare(cocos2d::CCObject*) {
+    auto dict = new DS_Dictionary();
+
+    dict->setSubDictForKey("kit");
+    if (!dict->stepIntoSubDictWithKey("kit"))
+        return delete dict;
+
+    this->m_pKitObject->encodeWithCoder(dict);
+
+    dict->stepOutOfSubDict();
+
+    auto name = this->m_pKitObject->getName() + ".xml";
+
+    if (!dict->saveRootSubDictToFile(name.c_str()))
+        return delete dict;
+
+    gd::FLAlertLayer::create(
+        nullptr,
+        "Kit saved!",
+        "OK", nullptr,
+        "Saved kit to <co>" + name + "</c>!"
+    )->show();
+
+    delete dict;
+}
+
 bool IconKitWidget::init(IconKitObject* _obj, float _width) {
     if (!cocos2d::CCNode::init())
         return false;
@@ -202,8 +228,19 @@ bool IconKitWidget::init(IconKitObject* _obj, float _width) {
     );
     useButton->setPosition(this->m_fWidth / 2 - padding - 40.0f, 0.0f);
 
+    // auto spr_share = cocos2d::CCSprite::createWithSpriteFrameName("GJ_downloadsIcon_001.png");
+    // spr_share->setScale(.5f);
+    // spr_share->setFlipX(true);
+    // spr_share->setRotation(270.0f);
+
+    // auto shareButton = gd::CCMenuItemSpriteExtra::create(
+    //     spr_share, this, (cocos2d::SEL_MenuHandler)&IconKitWidget::onShare
+    // );
+    // shareButton->setPosition(this->m_fWidth / 2 - 15.0f, this->m_fHeight / 2 - 15.0f);
+
     menu->addChild(useButton);
     menu->addChild(deleteButton);
+    // menu->addChild(shareButton);
     menu->setPosition(this->m_fWidth/ 2, this->m_fHeight / 2);
 
     this->addChild(menu, 100);

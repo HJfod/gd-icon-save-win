@@ -14,7 +14,7 @@ bool BrownAlertDelegate::init(float _w, float _h, const char* _spr, const char* 
     this->m_pLayer->addChild(bg);
 
     this->m_pButtonMenu = cocos2d::CCMenu::create();
-    this->m_pLayer->addChild(this->m_pButtonMenu);
+    this->m_pLayer->addChild(this->m_pButtonMenu, 100);
 
     if (sizeof _title > 0) {
         auto title = cocos2d::CCLabelBMFont::create(_title, "goldFont.fnt");

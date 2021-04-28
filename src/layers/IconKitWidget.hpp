@@ -27,6 +27,7 @@ class IconKitWidget : public cocos2d::CCLayer {
 
         void onRemove(cocos2d::CCObject*);
         void onUse(cocos2d::CCObject*);
+        void onShare(cocos2d::CCObject*);
         void onRename(cocos2d::CCObject*);
         UnlockList checkRequiredIcons();
 

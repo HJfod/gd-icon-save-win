@@ -1,8 +1,18 @@
 #include "IconSelectPopup.hpp"
 #include "../managers/IconKitManager.hpp"
 #include "IconKitWidget.hpp"
+#include "RenameDialog.hpp"
 #undef max
 #undef min
+
+std::string lower(std::string const& _text) {
+    auto data = _text;
+
+    std::transform(data.begin(), data.end(), data.begin(),
+        [](unsigned char c){ return std::tolower(c); });
+    
+    return data;
+}
 
 void IconSelectPopup::onClose(cocos2d::CCObject* pSender) {
     // change border color back LOL
@@ -36,7 +46,7 @@ void IconSelectPopup::showKitRemovedMessage(float _y) {
     this->m_pScrollingLayer->m_pScrollLayer->addChild(bgSprite);
 }
 
-void IconSelectPopup::onNextPage(cocos2d::CCObject* pSender) {
+void IconSelectPopup::onNextPage(cocos2d::CCObject*) {
     auto kits = IconKitManager::sharedState()->getKits();
 
     unsigned int maxPage = static_cast<unsigned int>(
@@ -54,7 +64,7 @@ void IconSelectPopup::onNextPage(cocos2d::CCObject* pSender) {
     this->m_pBtnLeft->setVisible(true);
 }
 
-void IconSelectPopup::onPrevPage(cocos2d::CCObject* pSender) {
+void IconSelectPopup::onPrevPage(cocos2d::CCObject*) {
     auto kits = IconKitManager::sharedState()->getKits();
 
     if (this->m_nCurrentPage > 0)
@@ -68,16 +78,25 @@ void IconSelectPopup::onPrevPage(cocos2d::CCObject* pSender) {
     this->m_pBtnRight->setVisible(true);
 }
 
-void IconSelectPopup::showPage(unsigned int _page) {
-    auto kits = IconKitManager::sharedState()->getKits();
+void IconSelectPopup::showPage(unsigned int _page, const char* _filter) {
+    std::vector<IconKitObject*> kits;
+    auto kitsO = IconKitManager::sharedState()->getKits();
+    
+    for (auto ix = 0u; ix < kitsO->count(); ix++) {
+        auto kit = dynamic_cast<IconKitObject*>(kitsO->objectAtIndex(ix));
+        
+        if (lower(kit->getName()).find(lower(_filter)) != std::string::npos)
+            kits.push_back(kit);
+    }
+
     auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
     auto count = std::min(
-        kits->count() - this->m_nCurrentPage * IconSelectPopup::s_nMaxOnPage,
+        static_cast<unsigned int>(kits.size()) - this->m_nCurrentPage * IconSelectPopup::s_nMaxOnPage,
         IconSelectPopup::s_nMaxOnPage
     );
     unsigned int maxPage = static_cast<unsigned int>(
-        std::floor(kits->count() / static_cast<double>(this->s_nMaxOnPage))
+        std::floor(kits.size() / static_cast<double>(this->s_nMaxOnPage))
     );
 
     auto pageStr = "Page " + std::to_string(this->m_nCurrentPage + 1) + "/" + std::to_string(maxPage + 1);
@@ -90,7 +109,7 @@ void IconSelectPopup::showPage(unsigned int _page) {
     this->m_pScrollingLayer->m_pScrollLayer->setPositionY(0.0f);
 
     for (auto ix = 0u; ix < count; ix++) {
-        auto kit = dynamic_cast<IconKitObject*>(kits->objectAtIndex(
+        auto kit = dynamic_cast<IconKitObject*>(kits.at(
             ix + this->m_nCurrentPage * IconSelectPopup::s_nMaxOnPage
         ));
         auto kitWidget = IconKitWidget::create(kit, w);
@@ -108,6 +127,17 @@ void IconSelectPopup::showPage(unsigned int _page) {
 
         this->setMouseEnabled(true);
         this->setTouchEnabled(true);
+    }
+}
+
+void IconSelectPopup::onSearch(cocos2d::CCObject*) {
+    auto dialog = RenameDialog::create("Search Kits", "Search");
+
+    if (dialog) {
+        dialog->show();
+        dialog->setCallback([this](const char* _str) -> void {
+            this->showPage(0, _str);
+        });
     }
 }
 
@@ -148,7 +178,7 @@ void IconSelectPopup::setup() {
 
     if (kits->count()) {
         unsigned int maxPage = static_cast<unsigned int>(
-            std::floor(kits->count() / static_cast<double>(this->s_nMaxOnPage))
+            std::floor(kits->count() / static_cast<double>(this->s_nMaxOnPage - 1))
         );
 
         this->m_pBtnLeft = gd::CCMenuItemSpriteExtra::create(
@@ -186,6 +216,18 @@ void IconSelectPopup::setup() {
     }
 
     this->m_pLayer->addChild(this->m_pScrollingLayer);
+
+    auto searchBtn = gd::CCMenuItemSpriteExtra::create(
+        cocos2d::CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"),
+        this,
+        (cocos2d::SEL_MenuHandler)&IconSelectPopup::onSearch
+    );
+    searchBtn->setPosition(
+        - this->m_pLrSize.width / 2 + 60.0f,
+        this->m_pLrSize.height / 2 - 25.0f
+    );
+
+    this->m_pButtonMenu->addChild(searchBtn, 100);
 }
 
 IconSelectPopup* IconSelectPopup::create(GJGarageLayer* gl) {

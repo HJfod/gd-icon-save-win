@@ -1,6 +1,6 @@
 #include "src/mod.hpp"
 
-// #define GDCONSOLE
+#define GDCONSOLE
 
 #ifdef GDCONSOLE
 #include "src/utils/console.hpp"

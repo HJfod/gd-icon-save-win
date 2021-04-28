@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../nodes/BrownAlertDelegate.hpp"
+#include "../nodes/InputNode.hpp"
 #include "GJGarageLayer.hpp"
 
 class GJGarageLayer;
@@ -22,9 +23,10 @@ class IconSelectPopup : public BrownAlertDelegate {
         void setup() override;
         void onClose(cocos2d::CCObject*);
 
-        void showPage(unsigned int);
+        void showPage(unsigned int, const char* = "");
         void onNextPage(cocos2d::CCObject*);
         void onPrevPage(cocos2d::CCObject*);
+        void onSearch(cocos2d::CCObject*);
 
     public:
         void showKitRemovedMessage(float);
