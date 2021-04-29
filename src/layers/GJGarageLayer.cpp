@@ -81,7 +81,7 @@ bool __fastcall GJGarageLayer::initHook(GJGarageLayer* _self) {
 
     menu->setPosition(0, 0);
 
-    _self->addChild(menu, 1005);
+    _self->addChild(menu, 20);
     
     return true;
 }
