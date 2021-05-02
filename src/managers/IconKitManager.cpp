@@ -75,6 +75,11 @@ void IconKitManager::removeKit(IconKitObject* _obj) {
     this->m_vKits->removeObject(_obj, true);
 }
 
+void IconKitManager::moveKitToTop(IconKitObject* _obj) {
+    this->m_vKits->removeObject(_obj, false);
+    this->m_vKits->insertObject(_obj, 0);
+}
+
 cocos2d::CCArray* IconKitManager::getKits() {
     return this->m_vKits;
 }

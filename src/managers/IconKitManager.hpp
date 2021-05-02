@@ -18,6 +18,7 @@ class IconKitManager : public gd::GManager {
         void addKit(IconKitObject*);
         void removeKit(IconKitObject*);
         cocos2d::CCArray* getKits();
+        void moveKitToTop(IconKitObject*);
 
         ~IconKitManager();
 };

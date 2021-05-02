@@ -8,8 +8,6 @@ class GJGarageLayer : public cocos2d::CCLayer {
         PAD(0x18)
         gd::SimplePlayer* m_pPlayerPreview;
 
-        GJGarageLayer* originalPointer;
-
         static inline bool (__fastcall* init)(GJGarageLayer*);
         static bool __fastcall initHook(GJGarageLayer*);
 

@@ -2,6 +2,7 @@
 
 #include "../nodes/BrownAlertDelegate.hpp"
 #include "../nodes/InputNode.hpp"
+#include "../managers/IconKitObject.hpp"
 #include "GJGarageLayer.hpp"
 
 class GJGarageLayer;
@@ -28,11 +29,14 @@ class IconSelectPopup : public BrownAlertDelegate {
         void onPrevPage(cocos2d::CCObject*);
         void onSearch(cocos2d::CCObject*);
         void onCancelSearch(cocos2d::CCObject*);
+        void onImport(cocos2d::CCObject*);
 
         void scrollWheel(float, float) override;
 
     public:
         void showKitRemovedMessage(float);
+        void refreshList();
+        void editKit(IconKitObject*);
 
         static IconSelectPopup * create(GJGarageLayer* = nullptr);
 };

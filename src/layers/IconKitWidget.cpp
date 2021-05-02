@@ -1,7 +1,19 @@
 #include "IconKitWidget.hpp"
 #include "../managers/IconKitManager.hpp"
 #include "RenameDialog.hpp"
+#include "../nodes/PickMenu.hpp"
+#include <shlobj_core.h>
 #undef max
+
+const wchar_t *GetWC(const char *c) {
+    const size_t cSize = strlen(c)+1;
+    wchar_t* wc = new wchar_t[cSize];
+
+    size_t out;
+    mbstowcs_s(&out, wc, cSize, c, cSize - 1);
+
+    return wc;
+}
 
 UnlockList IconKitWidget::checkRequiredIcons() {
     auto gm = gd::GameManager::sharedState();
@@ -32,6 +44,27 @@ UnlockList IconKitWidget::checkRequiredIcons() {
         unlocks.push_back({ gd::kUnlockTypeSpecial, 2 });
 
     return unlocks;
+}
+
+void IconKitWidget::FLAlert_Clicked(gd::FLAlertLayer* _this, bool _btn2) {
+    if (_btn2) {
+        PWSTR path;
+        if (!SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path)) {
+            auto name = this->m_pKitObject->getName() + ".xml";
+            auto wname = GetWC( name.c_str() );
+
+            std::wstring w = path;
+            ITEMIDLIST *pidl = ILCreateFromPathW((w + L"\\GeometryDash\\" + wname).c_str());
+
+            if (pidl) {
+                SHOpenFolderAndSelectItems(pidl, 0, 0, 0);
+                ILFree(pidl);
+            }
+            
+            delete wname;
+            free(path);
+        }
+    }
 }
 
 void IconKitWidget::onRemove(cocos2d::CCObject* pSender) {
@@ -144,13 +177,38 @@ void IconKitWidget::onShare(cocos2d::CCObject*) {
         return delete dict;
 
     gd::FLAlertLayer::create(
-        nullptr,
+        this,
         "Kit saved!",
-        "OK", nullptr,
+        "OK", "Show File",
         "Saved kit to <co>" + name + "</c>!"
     )->show();
 
     delete dict;
+}
+
+void IconKitWidget::onMoveToTop(cocos2d::CCObject*) {
+    IconKitManager::sharedState()->moveKitToTop(this->m_pKitObject);
+    
+    if (this->m_pParentPopup)
+        this->m_pParentPopup->refreshList();
+}
+
+void IconKitWidget::onEditKit(cocos2d::CCObject*) {
+    if (this->m_pParentPopup)
+        this->m_pParentPopup->editKit(this->m_pKitObject);
+}
+
+void IconKitWidget::onSettings(cocos2d::CCObject*) {
+    PickMenu::create(
+        "",
+        this,
+        {
+            // { "Modify kit", (cocos2d::SEL_MenuHandler)&IconKitWidget::onEditKit },
+            { "Delete kit", (cocos2d::SEL_MenuHandler)&IconKitWidget::onRemove },
+            { "Move to top", (cocos2d::SEL_MenuHandler)&IconKitWidget::onMoveToTop },
+            // { "Export to File", (cocos2d::SEL_MenuHandler)&IconKitWidget::onShare },
+        }
+    )->show();
 }
 
 bool IconKitWidget::init(IconKitObject* _obj, float _width) {
@@ -212,11 +270,11 @@ bool IconKitWidget::init(IconKitObject* _obj, float _width) {
         this->m_pBGSprite->addChild(icon);
     }
 
-    auto spr_delete = cocos2d::CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
+    auto spr_delete = cocos2d::CCSprite::createWithSpriteFrameName("GJ_optionsBtn02_001.png"); // GJ_trashBtn_001.png
     spr_delete->setScale(.8f);
 
     auto deleteButton = gd::CCMenuItemSpriteExtra::create(
-        spr_delete, this, (cocos2d::SEL_MenuHandler)&IconKitWidget::onRemove
+        spr_delete, this, (cocos2d::SEL_MenuHandler)&IconKitWidget::onSettings
     );
     deleteButton->setPosition(this->m_fWidth / 2 - padding, 0.0f);
 

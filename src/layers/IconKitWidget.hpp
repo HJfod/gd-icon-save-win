@@ -7,7 +7,10 @@
 #include "GJGarageLayer.hpp"
 #include "UnlockDialog.hpp"
 
-class IconKitWidget : public cocos2d::CCLayer {
+class IconKitWidget : 
+    public cocos2d::CCLayer,
+    public gd::FLAlertLayerProtocol {
+
     public:
         static constexpr const float s_defWidth = 360.0f;
         static constexpr const float s_defHeight = 70.0f;
@@ -29,6 +32,12 @@ class IconKitWidget : public cocos2d::CCLayer {
         void onUse(cocos2d::CCObject*);
         void onShare(cocos2d::CCObject*);
         void onRename(cocos2d::CCObject*);
+        void onSettings(cocos2d::CCObject*);
+        void onMoveToTop(cocos2d::CCObject*);
+        void onEditKit(cocos2d::CCObject*);
+
+        void FLAlert_Clicked(gd::FLAlertLayer*, bool) override;
+
         UnlockList checkRequiredIcons();
 
     public:

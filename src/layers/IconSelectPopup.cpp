@@ -58,7 +58,39 @@ void IconSelectPopup::showKitRemovedMessage(float _y) {
         _y + IconKitWidget::s_defHeight / 2
     );
 
+    // auto menu = cocos2d::CCMenu::create();
+
+    // auto undo_spr = cocos2d::CCSprite::createWithSpriteFrameName("GJ_undoBtn_001.png");
+    // undo_spr->setScale(1.6f);
+
+    // auto undo = gd::CCMenuItemSpriteExtra::create(
+    //     undo_spr,
+    //     this,
+    //     nullptr
+    // );
+
+    // menu->addChild(undo);
+
+    // menu->setPosition(
+    //     bgSprite->getContentSize().width - 80.0f,
+    //     bgSprite->getContentSize().height / 2
+    // );
+
+    // bgSprite->addChild(menu);
+
     this->m_pScrollingLayer->m_pScrollLayer->addChild(bgSprite);
+}
+
+void IconSelectPopup::refreshList() {
+    this->showPage(0);
+}
+
+void IconSelectPopup::editKit(IconKitObject* _obj) {
+    
+}
+
+void IconSelectPopup::onImport(cocos2d::CCObject*) {
+
 }
 
 void IconSelectPopup::onNextPage(cocos2d::CCObject*) {
@@ -262,6 +294,19 @@ void IconSelectPopup::setup() {
         this->m_pLrSize.height / 2 - 25.0f
     );
     this->m_pButtonMenu->addChild(cancelBtn, 100);
+
+    // auto import_spr = cocos2d::CCSprite::createWithSpriteFrameName("GJ_plus3Btn_001.png");
+    // import_spr->setScale(.95f);
+
+    // auto importBtn = gd::CCMenuItemSpriteExtra::create(
+    //     import_spr,
+    //     this,
+    //     (cocos2d::SEL_MenuHandler)&IconSelectPopup::onImport
+    // );
+    // importBtn->setPosition(
+    //     cocos2d::CCPoint(0.0f, 0.0f) - this->m_pLrSize / 2 + cocos2d::CCPoint( 16.0f, 16.0f )
+    // );
+    // this->m_pButtonMenu->addChild(importBtn);
 
     this->setMouseEnabled(true);
 }
