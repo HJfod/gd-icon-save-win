@@ -21,7 +21,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 # so we don't have to deal with hook
 # conflicts
 option(BUILD_SHARED_LIBS "" ON)
-
 add_subdirectory(sub/MinHook)
 target_link_libraries(${PROJECT_NAME} sub/MinHook/Release/minhook.x32)
 

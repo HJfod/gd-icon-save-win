@@ -58,9 +58,9 @@ inline bool patchVFunction(
     DWORD old;
     auto addr = &func;
 
-    VirtualProtect(gd::base + address, 4, PAGE_EXECUTE_READWRITE, &old);
-    auto res = patchVoid(gd::base + address, &addr, nullptr, 4);
-    VirtualProtect(gd::base + address, 4, PAGE_READONLY, &old);
+    VirtualProtect((LPVOID)(gd::base + address), 4, PAGE_EXECUTE_READWRITE, &old);
+    auto res = patchVoid((void*)(gd::base + address), &addr, nullptr, 4);
+    VirtualProtect((LPVOID)(gd::base + address), 4, PAGE_READONLY, &old);
 
     return res;
 }
