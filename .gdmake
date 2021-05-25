@@ -1,0 +1,15 @@
+{
+  "ProjectName": "IconSave",
+  "EntryPoint": null,
+  "ConsoleEnabled": false,
+  "Compiler": 0,
+  "Platform": 0,
+  "IgnoredFiles": [],
+  "Libs": [
+    "libs/minhook.x32.lib",
+    "submodules/Cocos2d/cocos2dx/libcocos2d.lib",
+    "submodules/Cocos2d/extensions/libExtensions.lib"
+  ],
+  "Dlls": null,
+  "Resources": []
+}
